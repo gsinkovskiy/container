@@ -1,0 +1,12 @@
+{
+  "name": "hazycastrel/container",
+  "autoload": {
+    "psr-4": {
+      "HazyCastrel\\Container\\": "src/"
+    }
+  },
+  "require": {
+    "php": "7.4",
+    "psr/container": "^1.0"
+  }
+}

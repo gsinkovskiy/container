@@ -23,7 +23,7 @@ final class Container implements ContainerInterface
 
     public function has($id)
     {
-        return isset($this->servicesDefinitions[$id]) || isset($this->services[$id]);
+        return isset($this->servicesDefinitions[$id]) || isset($this->services[$id]) || class_exists($id);
     }
 
     public function register(array $definitions)
@@ -43,7 +43,9 @@ final class Container implements ContainerInterface
             throw new NotFoundException('Service "' . $id . '" is not registered.');
         }
 
-        if (is_callable($this->servicesDefinitions[$id])) {
+        $className = $this->servicesDefinitions[$id] ?? $id;
+
+        if (is_callable($className)) {
             return $this->servicesDefinitions[$id]($this);
         }
 

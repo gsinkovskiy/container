@@ -59,7 +59,23 @@ final class Container implements ContainerInterface
             }
         }
 
-        return $reflector->newInstanceArgs($arguments);
+        $service = $reflector->newInstanceArgs($arguments);
+
+        foreach ($reflector->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+            $methodName = $method->getName();
+
+            if (substr($methodName, 0, 3) === 'set') {
+                $arguments = [];
+
+                foreach ($method->getParameters() as $parameter) {
+                    $arguments[] = $this->get($parameter->getClass()->getName());
+                }
+
+                $method->invokeArgs($service, $arguments);
+            }
+        }
+
+        return $service;
     }
 
 }

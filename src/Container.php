@@ -53,8 +53,10 @@ final class Container implements ContainerInterface
         $constructorReflector = $reflector->getConstructor();
         $arguments = [];
 
-        foreach ($constructorReflector->getParameters() as $parameter) {
-            $arguments[] = $this->get($parameter->getClass()->getName());
+        if ($constructorReflector) {
+            foreach ($constructorReflector->getParameters() as $parameter) {
+                $arguments[] = $this->get($parameter->getClass()->getName());
+            }
         }
 
         return $reflector->newInstanceArgs($arguments);

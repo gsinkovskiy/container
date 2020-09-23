@@ -26,15 +26,25 @@ final class Container implements ContainerInterface
         return isset($this->servicesDefinitions[$id]) || isset($this->services[$id]);
     }
 
-    public function register(string $id, string $className)
+    public function register(array $definitions)
     {
-        $this->servicesDefinitions[$id] = $className;
+        foreach ($definitions as $id => $classNameOrCallable) {
+            if ($classNameOrCallable === null) {
+                $classNameOrCallable = $id;
+            }
+
+            $this->servicesDefinitions[$id] = $classNameOrCallable;
+        }
     }
 
     private function createService(string $id)
     {
         if (!$this->has($id)) {
             throw new NotFoundException('Service "' . $id . '" is not registered.');
+        }
+
+        if (is_callable($this->servicesDefinitions[$id])) {
+            return $this->servicesDefinitions[$id]($this);
         }
 
         $reflector = new \ReflectionClass($this->servicesDefinitions[$id]);

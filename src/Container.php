@@ -43,13 +43,13 @@ final class Container implements ContainerInterface
             throw new NotFoundException('Service "' . $id . '" is not registered.');
         }
 
-        $className = $this->servicesDefinitions[$id] ?? $id;
+        $classNameOrCallable = $this->servicesDefinitions[$id] ?? $id;
 
-        if (is_callable($className)) {
-            return $this->servicesDefinitions[$id]($this);
+        if (is_callable($classNameOrCallable)) {
+            return $classNameOrCallable($this);
         }
 
-        $reflector = new \ReflectionClass($this->servicesDefinitions[$id]);
+        $reflector = new \ReflectionClass($classNameOrCallable);
         $constructorReflector = $reflector->getConstructor();
         $arguments = [];
 
